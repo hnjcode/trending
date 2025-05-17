@@ -2,6 +2,7 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import db from '../db'; // Adjust path as needed
 import { Topic } from '../types/Topic'; // Adjust path as needed
+import { producer } from '../kafka/kafkaClient';
 
 const router = Router();
 
@@ -17,7 +18,16 @@ router.post('/add', async (req: Request, res: Response) => {
       'INSERT INTO topic (name, description) VALUES ($1, $2) RETURNING *',
       [name, description]
     );
-    res.status(201).json(result.rows[0]);
+
+    const newTopic = result.rows[0];
+    await producer.send({
+      topic: 'trending',
+      messages: [
+        { value: JSON.stringify(newTopic) }
+      ]
+    });
+
+    res.status(201).json(newTopic);
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
     res.status(500).json({ error: errorMessage });

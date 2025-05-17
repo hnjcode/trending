@@ -32,19 +32,11 @@ node
 postgres
 vs code
 
+----
 
-
-
-
-
--------
-
-- rename project to trending 
-- add gitignore file and ignore node_modules 
-- create github repo
-- commit and push
-
-
-npm init -y
-npm install express pg
-npm install --save-dev typescript ts-node-dev @types/node @types/express
+### Tools used
+- node backend
+- postgres sql
+- react ui
+- docker compose
+- kafka
